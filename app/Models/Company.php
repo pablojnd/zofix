@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'slug', 'email', 'phone', 'address'])]
 class Company extends Model
 {
     /** @use HasFactory<CompanyFactory> */
-    use HasFactory, HasUlids;
+    use HasFactory, HasUlids, SoftDeletes;
 
     /**
      * The users that belong to this company (panel tenant membership).

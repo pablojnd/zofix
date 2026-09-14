@@ -24,12 +24,12 @@ class CompanySeeder extends Seeder
     {
         $alpha = User::firstOrCreate(
             ['email' => 'alpha@example.com'],
-            ['name' => 'Alpha Owner', 'password' => 'password'],
+            ['name' => 'Alpha Owner', 'password' => '123456'],
         );
 
         $beta = User::firstOrCreate(
             ['email' => 'beta@example.com'],
-            ['name' => 'Beta Owner', 'password' => 'password'],
+            ['name' => 'Beta Owner', 'password' => '123456'],
         );
 
         $acmeLogistics = $this->company('acme-logistics', 'Acme Logistics', $alpha);
