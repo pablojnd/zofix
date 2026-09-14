@@ -6,6 +6,18 @@
       "sourceType": "github",
       "skillPath": "skills/filament-pro/SKILL.md",
       "computedHash": "8e7763e017b3cfbdbf16bd968cfdb62e138a7e89f9494766e1d91c4e339fcd5f"
+    },
+    "laravel-database-optimization": {
+      "source": "asyrafhussin/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/laravel-database-optimization/SKILL.md",
+      "computedHash": "564cbba91a281420e077178d7b367ef1c367576ff6f050f9ee6eaa99d30d2a1c"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/supabase-postgres-best-practices/SKILL.md",
+      "computedHash": "e14e276241805c97dbcfe40dcbea1a3035269cc7293cac4b1832dda41a835e60"
     }
   }
 }
