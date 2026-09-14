@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('environment', ['qa', 'prod'])->default('qa');
             $table->text('token')->nullable();
             $table->text('refresh_token')->nullable()->comment('Refresh token for the Sve max duration of 20 minutes');
+            $table->timestamps();
         });
 
         // Unidades de Medida
@@ -34,7 +35,7 @@ return new class extends Migration
         });
 
         // Codigo Arancelario
-        Schema::create('sve_tariff_code', function (Blueprint $table) {
+        Schema::create('sve_tariff_codes', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string('code', 10)->unique();
             $table->string('name', 100);
@@ -52,8 +53,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sve_tokens');
+        Schema::dropIfExists('sve_tariff_codes');
         Schema::dropIfExists('sve_unit_of_measurements');
-        Schema::dropIfExists('sve_tariff_code');
+        Schema::dropIfExists('sve_tokens');
     }
 };

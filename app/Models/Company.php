@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\CompanyFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    /** @use HasFactory<\Database\Factories\CompanyFactory> */
-    use HasFactory;
+    /** @use HasFactory<CompanyFactory> */
+    use HasFactory, HasUlids;
 }
