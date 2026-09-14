@@ -36,6 +36,12 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('company_user', function (Blueprint $table) {
+            $table->foreignUlid('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
+            $table->primary(['company_id', 'user_id']);
+        });
     }
 
     /**
@@ -46,5 +52,6 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('company_user');
     }
 };

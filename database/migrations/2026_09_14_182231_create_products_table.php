@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('sku')->unique();
             $table->string('sku_provider')->nullable();
-            $table->string('barcode')->nullable();
             $table->integer('price')->default(0)->comment('Price in CLP');
             $table->decimal('packing', 12, 2)->default(0);
             $table->decimal('weight', 12, 2)->default(0)->comment('Weight in KG');
@@ -29,7 +28,7 @@ return new class extends Migration
             $table->decimal('length', 12, 2)->default(0)->comment('Length in CM');
             $table->string('sale_unit')->default('unidad')->comment('unidad|m2|m3|pie|ml');
             $table->string('status')->default('inactive')->comment('active|inactive|discontinued');
-            $table->string('images')->nullable();
+            $table->json('images')->nullable();
             $table->foreignUlid('sve_unit_of_measurement_id')->nullable()->constrained('sve_unit_of_measurements')->nullOnDelete()->comment('Parent unit of measurement');
             $table->foreignUlid('sve_tariff_code_id')->nullable()->constrained('sve_tariff_codes')->nullOnDelete()->comment('Tariff code for the product');
             $table->timestamps();
@@ -63,6 +62,7 @@ return new class extends Migration
 
             $table->index('product_id');
             $table->index('attribute_id');
+            $table->unique(['product_id', 'attribute_id']);
         });
     }
 

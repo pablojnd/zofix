@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -14,7 +15,7 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
@@ -22,12 +23,15 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        // Partial unique indexes so soft-deleted rows do not block re-registration (Postgres/SQLite).
+        DB::statement('create unique index companies_slug_unique on companies (slug) where deleted_at is null');
+
         Schema::create('warehouses', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('company_id')->constrained('companies');
             $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('code')->unique();
+            $table->string('slug');
+            $table->string('code');
             $table->string('email_contact')->nullable();
             $table->string('phone_contact')->nullable();
             $table->string('address')->nullable();
@@ -35,10 +39,14 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        // Tenant-scoped uniqueness; warehouse identifiers only need to be unique within a company.
+        DB::statement('create unique index warehouses_company_slug_unique on warehouses (company_id, slug) where deleted_at is null');
+        DB::statement('create unique index warehouses_company_code_unique on warehouses (company_id, code) where deleted_at is null');
+
         Schema::create('sve_credentials', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->foreignUlid('company_id')->unique()->constrained('companies');
-            $table->string('username')->unique();
+            $table->string('username');
             $table->text('password')->nullable();
             $table->text('password_qa')->nullable();
             $table->string('company_rut')->nullable();
@@ -46,6 +54,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        DB::statement('create unique index sve_credentials_username_unique on sve_credentials (username) where deleted_at is null');
 
         Schema::create('webpay_credentials', function (Blueprint $table): void {
             $table->ulid('id')->primary();
@@ -63,9 +73,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
-        Schema::dropIfExists('warehouses');
-        Schema::dropIfExists('sve_credentials');
         Schema::dropIfExists('webpay_credentials');
+        Schema::dropIfExists('sve_credentials');
+        Schema::dropIfExists('warehouses');
+        Schema::dropIfExists('companies');
     }
 };
