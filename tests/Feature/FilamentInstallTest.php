@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -24,8 +25,12 @@ it('creates all domain tables with consistent naming', function (): void {
 
 it('serves the filament admin panel to authenticated users', function (): void {
     $user = User::factory()->create();
+    $company = Company::factory()->create();
 
-    $this->actingAs($user)->get('/admin')->assertOk();
+    // Panel tenancy requires the user to belong to at least one tenant.
+    $user->companies()->attach($company);
+
+    $this->actingAs($user)->followingRedirects()->get('/admin')->assertOk();
 });
 
 it('rolls back the new migrations cleanly', function (): void {

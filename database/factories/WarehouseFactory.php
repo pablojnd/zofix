@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Company;
+use App\Models\Warehouse;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Company>
+ * @extends Factory<Warehouse>
  */
-class CompanyFactory extends Factory
+class WarehouseFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,10 +19,12 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->company(),
+            'company_id' => Company::factory(),
+            'name' => fake()->city().' Warehouse',
             'slug' => fake()->unique()->slug(),
-            'email' => fake()->unique()->companyEmail(),
-            'phone' => fake()->phoneNumber(),
+            'code' => fake()->unique()->bothify('WH-####'),
+            'email_contact' => fake()->unique()->safeEmail(),
+            'phone_contact' => fake()->phoneNumber(),
             'address' => fake()->address(),
         ];
     }
