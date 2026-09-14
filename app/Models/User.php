@@ -34,7 +34,8 @@ class User extends Authenticatable implements HasTenants
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->companies()->whereKey($tenant)->exists();
+        return $tenant instanceof Company
+            && $this->companies()->whereKey($tenant->getKey())->exists();
     }
 
     /**
@@ -42,7 +43,7 @@ class User extends Authenticatable implements HasTenants
      */
     public function getTenants(Panel $panel): Collection
     {
-        return $this->companies;
+        return $this->companies()->get();
     }
 
     /**

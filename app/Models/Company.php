@@ -34,4 +34,14 @@ class Company extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function brands(): HasMany
+    {
+        return $this->hasMany(Brand::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
 }
