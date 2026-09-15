@@ -24,11 +24,11 @@
         "codebase-memory-mcp": {
             "type": "local",
             "command": [
-                "/home/shw/.local/bin/codebase-memory-mcp"
+                "/home/orca/.local/bin/codebase-memory-mcp"
             ],
-            "cwd": "/home/shw/projects/laravel/aurion",
+            "cwd": "/home/orca/workspace/laravel/zofix",
             "environment": {
-                "CBM_ALLOWED_ROOT": "/home/shw/projects/laravel/aurion"
+                "CBM_ALLOWED_ROOT": "/home/orca/workspace/laravel/zofix"
             },
             "enabled": true
         }

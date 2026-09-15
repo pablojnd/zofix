@@ -11,20 +11,30 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'code', 'name', 'description', 'sve_unit_of_measurement_id', 'print_label', 'is_active',
+    'code', 'name', 'description', 'sve_unit_of_measurement_id', 'unit_name', 'unit_sigla', 'is_active',
 ])]
-class SveTariffCode extends Model
+class SveUnitOfMeasurement extends Model
 {
     use HasUlids, SoftDeletes;
 
-    public function unitOfMeasurement(): BelongsTo
+    public function parentUnit(): BelongsTo
     {
-        return $this->belongsTo(SveUnitOfMeasurement::class, 'sve_unit_of_measurement_id');
+        return $this->belongsTo(self::class, 'sve_unit_of_measurement_id');
+    }
+
+    public function childUnits(): HasMany
+    {
+        return $this->hasMany(self::class, 'sve_unit_of_measurement_id');
+    }
+
+    public function tariffCodes(): HasMany
+    {
+        return $this->hasMany(SveTariffCode::class, 'sve_unit_of_measurement_id');
     }
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class, 'sve_tariff_code_id');
+        return $this->hasMany(Product::class, 'sve_unit_of_measurement_id');
     }
 
     /**
