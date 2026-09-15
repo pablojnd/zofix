@@ -44,6 +44,15 @@ class ListProducts extends ListRecords
     {
         return [
             ProductStatsOverview::class,
+        ];
+    }
+
+    /**
+     * @return array<class-string>
+     */
+    protected function getFooterWidgets(): array
+    {
+        return [
             ProductStatusChart::class,
         ];
     }
