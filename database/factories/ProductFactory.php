@@ -32,7 +32,6 @@ class ProductFactory extends Factory
                 ->id,
             'provider_id' => null,
             'name' => fake()->words(3, true),
-            'sku' => fake()->unique()->bothify('SKU-#####'),
             'sku_provider' => null,
             'price' => fake()->numberBetween(100, 100_000),
             'packing' => fake()->randomFloat(2, 1, 100),

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use JeffersonGoncalves\Filament\BarcodeField\Forms\Components\BarcodeInput;
 
 class ProductForm
 {
@@ -21,8 +23,15 @@ class ProductForm
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255),
-                        TextInput::make('sku')
-                            ->required()
+                        /*
+                         * The Product model owns SKU generation and immutability. Keep this
+                         * field visible and hydrated for existing records, but never persist
+                         * scanner state from the form.
+                         */
+                        BarcodeInput::make('sku')
+                            ->label('SKU / Barcode')
+                            ->readOnly()
+                            ->dehydrated(false)
                             ->maxLength(255),
                         TextInput::make('sku_provider')
                             ->maxLength(255),
@@ -60,8 +69,7 @@ class ProductForm
                     ->columns(2)
                     ->columnSpan(1)
                     ->schema([
-                        Select::make('company_id')
-                            ->required(),
+                        Hidden::make('company_id'),
                         Select::make('warehouse_id')
                             ->required(),
                         Select::make('brand_id')

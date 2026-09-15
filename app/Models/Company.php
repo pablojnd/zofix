@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'slug', 'email', 'phone', 'address'])]
@@ -33,6 +34,11 @@ class Company extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function skuSetting(): HasOne
+    {
+        return $this->hasOne(CompanySkuSetting::class);
     }
 
     public function brands(): HasMany

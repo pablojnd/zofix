@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b720b491f132bafd153323c278cfe0cc",
+    "content-hash": "ffad587ff6c60297c7df6e36311e9200",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2180,6 +2180,68 @@
                 }
             ],
             "time": "2026-08-24T17:13:02+00:00"
+        },
+        {
+            "name": "jeffersongoncalves/filament-barcode-field",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jeffersongoncalves/filament-barcode-field.git",
+                "reference": "3358ff0ee0cfdfac5b5321d5d3af98356ddd2723"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jeffersongoncalves/filament-barcode-field/zipball/3358ff0ee0cfdfac5b5321d5d3af98356ddd2723",
+                "reference": "3358ff0ee0cfdfac5b5321d5d3af98356ddd2723",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.3",
+                "php": "^8.2|^8.3",
+                "spatie/laravel-package-tools": "^1.14.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.21",
+                "orchestra/testbench": "^9.0|^10.0|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JeffersonGoncalves\\Filament\\BarcodeField\\BarcodeFieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JeffersonGoncalves\\Filament\\BarcodeField\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jefferson Gonçalves",
+                    "email": "gerson.simao.92@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Filament package that provides Barcode field functionality for your web applications. This package extends Filament v5 with a simple barcode input component supporting EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF and Codabar.",
+            "homepage": "https://github.com/jeffersongoncalves/filament-barcode-field",
+            "keywords": [
+                "filament",
+                "filament-barcode-field",
+                "jeffersongoncalves",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/jeffersongoncalves/filament-barcode-field/issues",
+                "source": "https://github.com/jeffersongoncalves/filament-barcode-field/tree/3.0.0"
+            },
+            "time": "2026-07-22T01:56:25+00:00"
         },
         {
             "name": "kirschbaum-development/eloquent-power-joins",

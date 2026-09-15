@@ -12,7 +12,7 @@ it('creates all domain tables with consistent naming', function (): void {
     $tables = [
         'companies', 'warehouses', 'sve_tokens', 'sve_unit_of_measurements', 'sve_tariff_codes',
         'providers', 'brands', 'categories', 'attributes', 'attribute_values',
-        'products', 'product_category', 'attribute_product',
+        'products', 'product_category', 'attribute_product', 'company_sku_settings',
     ];
 
     foreach ($tables as $table) {
