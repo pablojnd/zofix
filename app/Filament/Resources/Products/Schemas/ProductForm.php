@@ -17,6 +17,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -75,19 +76,25 @@ class ProductForm
                             ->minValue(0)
                             ->step('0.01')
                             ->suffix('cm')
-                            ->default(0),
+                            ->default(0)
+                            ->live()
+                            ->afterStateUpdated(self::recalculatePacking()),
                         TextInput::make('width')
                             ->numeric()
                             ->minValue(0)
                             ->step('0.01')
                             ->suffix('cm')
-                            ->default(0),
+                            ->default(0)
+                            ->live()
+                            ->afterStateUpdated(self::recalculatePacking()),
                         TextInput::make('length')
                             ->numeric()
                             ->minValue(0)
                             ->step('0.01')
                             ->suffix('cm')
-                            ->default(0),
+                            ->default(0)
+                            ->live()
+                            ->afterStateUpdated(self::recalculatePacking()),
                         Select::make('sale_unit')
                             ->options(SalesUnit::class)
                             ->required()
@@ -114,6 +121,7 @@ class ProductForm
                             ->live()
                             ->scopedExists(
                                 SveUnitOfMeasurement::class,
+                                column: 'id',
                                 modifyQueryUsing: static fn (Builder $query): Builder => $query
                                     ->where('is_active', true)
                                     ->whereNull('deleted_at'),
@@ -142,6 +150,7 @@ class ProductForm
                             ])
                             ->scopedExists(
                                 SveTariffCode::class,
+                                column: 'id',
                                 modifyQueryUsing: static fn (Builder $query): Builder => $query
                                     ->where('is_active', true)
                                     ->whereNull('deleted_at'),
@@ -167,6 +176,7 @@ class ProductForm
                             ->live()
                             ->scopedExists(
                                 Warehouse::class,
+                                column: 'id',
                                 modifyQueryUsing: static fn (Builder $query): Builder => self::scopeToCurrentCompany($query),
                             )
                             ->required(),
@@ -180,6 +190,7 @@ class ProductForm
                             ->preload()
                             ->scopedExists(
                                 Brand::class,
+                                column: 'id',
                                 modifyQueryUsing: static fn (Builder $query): Builder => self::scopeToCurrentCompany($query),
                             )
                             ->required(),
@@ -224,6 +235,31 @@ class ProductForm
                     ]),
             ])
             ->columns(3);
+    }
+
+    /**
+     * Auto-fill `packing` as the piece volume (height × width × length, in cm³)
+     * whenever any dimension changes. One shared closure so the three fields
+     * stay consistent.
+     */
+    private static function recalculatePacking(): Closure
+    {
+        return function (Get $get, Set $set): void {
+            $set('packing', self::packingVolume(
+                $get('height'),
+                $get('width'),
+                $get('length'),
+            ));
+        };
+    }
+
+    /**
+     * Packing volume in cm³, rounded to 2 decimals to match the decimal(12,2)
+     * column. Missing dimensions count as zero so a partial form is safe.
+     */
+    public static function packingVolume(int|float|string|null $height, int|float|string|null $width, int|float|string|null $length): float
+    {
+        return round((float) $height * (float) $width * (float) $length, 2);
     }
 
     /**

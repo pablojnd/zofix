@@ -2,11 +2,16 @@
 
 use App\Filament\Exports\ProductExporter;
 use App\Filament\Imports\ProductImporter;
+use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\ViewProduct;
 use App\Filament\Resources\Products\ProductMetrics;
 use App\Filament\Resources\Products\ProductResource;
+use App\Filament\Resources\Products\Schemas\ProductForm;
+use App\Models\Brand;
 use App\Models\Company;
 use App\Models\Product;
+use App\Models\SveParameter\SveTariffCode;
+use App\Models\SveParameter\SveUnitOfMeasurement;
 use App\Models\User;
 use App\Models\Warehouse;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -14,6 +19,7 @@ use Filament\Actions\Exports\Models\Export;
 use Filament\Actions\Imports\Models\Import;
 use Filament\Facades\Filament;
 use Illuminate\Validation\ValidationException;
+use Livewire\Livewire;
 
 afterEach(function (): void {
     Filament::setTenant(null, true);
@@ -203,4 +209,68 @@ it('denies panel access to users without a company outside local development', f
     $this->actingAs(User::factory()->create())
         ->get('/admin')
         ->assertForbidden();
+});
+
+it('creates a product when selected tenant and SVE relationships exist', function (): void {
+    $user = User::factory()->create();
+    $company = Company::factory()->create();
+    $user->companies()->attach($company);
+    $warehouse = Warehouse::factory()->create(['company_id' => $company->id]);
+    $brand = Brand::factory()->create([
+        'company_id' => $company->id,
+        'warehouse_id' => $warehouse->id,
+    ]);
+    $unit = SveUnitOfMeasurement::create([
+        'code' => 'KWH',
+        'name' => 'Kilowatt-hour',
+        'unit_name' => 'Kilowatt-hour',
+        'unit_sigla' => 'kWh',
+        'is_active' => true,
+    ]);
+    $tariffCode = SveTariffCode::create([
+        'code' => '00040500',
+        'name' => 'Test tariff',
+        'sve_unit_of_measurement_id' => $unit->id,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($user);
+    Filament::setTenant($company, true);
+    Filament::setCurrentPanel('admin');
+    Filament::bootCurrentPanel();
+
+    Livewire::test(CreateProduct::class)
+        ->set('data', [
+            'name' => 'Validated product',
+            'price' => 100,
+            'packing' => 24,
+            'weight' => 1,
+            'height' => 2,
+            'width' => 3,
+            'length' => 4,
+            'sale_unit' => 'unidad',
+            'status' => 'active',
+            'warehouse_id' => $warehouse->id,
+            'brand_id' => $brand->id,
+            'sve_unit_of_measurement_id' => $unit->id,
+            'sve_tariff_code_id' => $tariffCode->id,
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors()
+        ->assertRedirect();
+
+    $product = Product::query()->where('name', 'Validated product')->firstOrFail();
+
+    expect($product->company_id)->toBe($company->id)
+        ->and($product->warehouse_id)->toBe($warehouse->id)
+        ->and($product->brand_id)->toBe($brand->id)
+        ->and($product->sve_unit_of_measurement_id)->toBe($unit->id)
+        ->and($product->sve_tariff_code_id)->toBe($tariffCode->id);
+});
+
+it('calculates packing as the piece volume in cm³', function (): void {
+    expect(ProductForm::packingVolume(30, 20, 10))->toBe(6000.0)
+        ->and(ProductForm::packingVolume('2.5', 4, 4))->toBe(40.0)
+        ->and(ProductForm::packingVolume(1.005, 1, 1))->toBe(1.01)
+        ->and(ProductForm::packingVolume(null, 5, 5))->toBe(0.0);
 });
